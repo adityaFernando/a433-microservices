@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: karsajobs
+  labels:
+    name: backend
+ #spesifikasi service
+spec:
+   #type layanan NodePort 
+  type: NodePort
+   #port yang akan digunakan untuk service
+  ports:
+    - port: 8080
+      nodePort: 30080
+   #selector yang akan digunakan untuk memilih pods yang akan jadi target
+  selector:
+    app: karsajobs

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karsajobs-ui
+  labels:
+    app: karsajobs-ui
+    tier: frontend
+spec:
+   #menentukan jumlah replicas
+  replicas: 1
+   #selector yang akan digunakan untuk memilih pods dengan label tier:frontend
+  selector:
+    matchLabels:
+      tier: frontend
+   #menjelaskan template untuk objek yang akan dibuat
+  template:
+    metadata:
+      labels:
+        app: karsajobs-ui
+        tier: frontend
+     #spesifikasi kontainer
+    spec:
+      containers:
+        - name: karsajobs-ui
+          image: ghcr.io/adityafernando/karsajobs-ui:latest
+          ports:
+          - containerPort: 8000

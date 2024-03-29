@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-statefulset
+  labels:
+    app: mongo
+ #spesifikasi objek untuk statefulset
+spec:
+   #selector yang akan digunakan untuk memilih pod yang dimiliki statefulset
+  selector:
+     #pods yang digunakan dengan label app:mongo dan tier:data
+    matchLabels:
+      app: mongo
+      tier: data
+   #nama service yang digunakan staefulset
+  serviceName: mongo
+   #jumlah replica yang digunakan
+  replicas: 1
+  #waktu minimun yang harus dilewati sejak pod dijalankan hingga dianggap siap
+  minReadySeconds: 10
+  #template yang akan dibuat statefulset
+  template:
+    metadata: 
+      labels:
+        app: mongo
+        tier: data
+     #spesifikasi untuk pod
+    spec:
+       #jumlah waktu yang diberikan untuk menyelesaikan pekerjaan
+      terminationGracePeriodSeconds: 10
+      containers:
+      - image: mongo:latest
+        name: mongo
+        #mendefiniskan variabel lingkungan yang akan di set dalam container
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_ROOT_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_ROOT_PASSWORD
+          #port yang di ekspos untuk kontainer
+        ports:
+        - containerPort: 27017
+          name: mongo
+          #volume yang digunakan oleh pod
+        volumeMounts:
+        - name: mongo-pv-claim
+          mountPath: /data/db
+        - name: mongo-config
+          mountPath: /config
+        - name: mongo-secret
+          mountPath: /etc/mongo-credentials
+      volumes:
+      - name: mongo-pv-claim
+        persistentVolumeClaim:
+          claimName: mongo-pv-claim
+      - name: mongo-config
+        configMap:
+          name: mongo-config
+          items:
+          - key: mongo.conf
+            path: mongo.conf
+      - name: mongo-secret
+        secret:
+          secretName: mongo-secret

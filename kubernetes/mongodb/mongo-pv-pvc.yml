@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv-volume
+ #spesifikasi untuk persistenVolume
+spec:
+   #kapasitas penyimpanan untuk peersistenVolume
+  capacity:
+    storage: 1Gi
+   #mode akses untuk persistenVolume
+  accessModes:
+    - ReadWriteOnce
+   #jalur host untuk penyimpanan data dalam persistenVolume
+  hostPath:
+    path: /data/mongo
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pv-claim
+ #spesifikasi untuk persistenVolumeClaim
+spec:
+   #mode akses untuk persistenVolumeClaim
+  accessModes:
+    - ReadWriteOnce
+    #sumber daya yang diminta oleh persistenVolumeClaim
+  resources:
+    requests:
+      storage: 1Gi

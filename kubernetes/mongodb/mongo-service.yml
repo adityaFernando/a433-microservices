@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  #spesifikasi untuk objek service
+spec:
+   #port untuk meng ekspos service
+  ports:
+    - port: 27017
+       #port yang menjadi permintaan yang diteruskan
+      targetPort: 27017
+   #selektor yang akan digunakan untuk memiih pods
+  selector:
+     #selector yang akan memilih pod dengan label app:mongo
+    app: mongo
+     #selector tambahan yang akan memilih pod dengan label tier:backend
+    tier: backend
+    #menentukan alamat IP untuk service, none yang berarti tidak memiliki alamat IP
+  clusterIP: None
